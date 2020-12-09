@@ -170,7 +170,7 @@ class QADataset(Dataset):
                         per_found = True
                 passage = passage[0:per_idx+1] + passage[arr_idx+1:]
 
-            if args.trim_passage 'cnn' in passage:
+            if args.trim_passage and 'cnn' in passage:
                 cnn_idx = passage.index('cnn')
                 passage = passage[cnn_idx+3:]
 
