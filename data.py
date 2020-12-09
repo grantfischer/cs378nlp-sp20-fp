@@ -165,6 +165,7 @@ class QADataset(Dataset):
             if self.args.trim_passage and '»' in passage:
                 print()
                 print(passage)
+                print('***')
                 per_idx = arr_idx = passage.index('»')
                 per_found = False
                 while not per_found:
