@@ -161,7 +161,7 @@ class QADataset(Dataset):
                 token.lower() for (token, offset) in elem['context_tokens']
             ][:self.args.max_context_length]
 
-            if args.trim_passage and '»' in passage:
+            if self.args.trim_passage and '»' in passage:
                 per_idx = arr_idx = passage.index('»')
                 per_found = False
                 while not per_found:
@@ -170,7 +170,7 @@ class QADataset(Dataset):
                         per_found = True
                 passage = passage[0:per_idx+1] + passage[arr_idx+1:]
 
-            if args.trim_passage and 'cnn' in passage:
+            if self.args.trim_passage and 'cnn' in passage:
                 cnn_idx = passage.index('cnn')
                 passage = passage[cnn_idx+3:]
 
