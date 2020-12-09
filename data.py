@@ -163,6 +163,7 @@ class QADataset(Dataset):
 
             
             if self.args.trim_passage and '»' in passage:
+                print(passage)
                 per_idx = arr_idx = passage.index('»')
                 per_found = False
                 while not per_found:
@@ -172,6 +173,7 @@ class QADataset(Dataset):
                 p1, p2 = passage[0:per_idx+1], passage[arr_idx+1:]
                 p1.extend(p2)
                 passage = p1
+                print(passage)
             
             '''
             if self.args.trim_passage and 'cnn' in passage:
