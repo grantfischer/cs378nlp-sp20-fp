@@ -161,7 +161,7 @@ class QADataset(Dataset):
                 token.lower() for (token, offset) in elem['context_tokens']
             ][:self.args.max_context_length]
 
-            '''
+            
             if self.args.trim_passage and '»' in passage:
                 per_idx = arr_idx = passage.index('»')
                 per_found = False
@@ -175,7 +175,7 @@ class QADataset(Dataset):
             if self.args.trim_passage and 'cnn' in passage:
                 cnn_idx = passage.index('cnn')
                 passage = passage[cnn_idx+3:]
-
+            '''
             # Each passage has several questions associated with it.
             # Additionally, each question has multiple possible answer spans.
             for qa in elem['qas']:
