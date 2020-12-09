@@ -193,6 +193,11 @@ parser.add_argument(
     default=0.,
     help='dropout on passage and question vectors',
 )
+parser.add_argument(
+    '--trim_passage',
+    action='store_true',
+    help='trim passage',
+)
 
 
 def _print_arguments(args):
