@@ -217,7 +217,7 @@ class QADataset(Dataset):
                         if len(rem_ranges) == 0 or answer_end < rem_ranges[0][0]:
                             samples.append((qid, passage, question, answer_start, answer_end))
                         else:
-                            num_rem = 0
+                            num_rem = 1
                             for r in rem_ranges:
                                 if r[0] > answer_end:
                                     break
