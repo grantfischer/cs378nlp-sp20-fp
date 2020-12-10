@@ -139,12 +139,22 @@ class QADataset(Dataset):
     """
     def __init__(self, args, path):
         self.args = args
-        self.meta, self.elems = load_dataset(path)
+        if path == 'exp':
+            self.meta, self.elems = self._compound_dataset()
+        else:
+            self.meta, self.elems = load_dataset(path)
         self.samples = self._create_samples()
         self.tokenizer = None
         self.batch_size = args.batch_size if 'batch_size' in args else 1
         self.pad_token_id = self.tokenizer.pad_token_id \
             if self.tokenizer is not None else 0
+
+    def _compound_datasets(self):
+        print('***compounding datasets')
+        meta, elems = load_dataset('datasets/squad_train.jsonl.gz')
+        _, elem2 = load_dataset('datasets/newsqa_train.jsonl.gz')
+        elems.extend(elem2)
+        return meta, elems
 
     def _create_samples(self):
         """
@@ -161,7 +171,7 @@ class QADataset(Dataset):
                 token.lower() for (token, offset) in elem['context_tokens']
             ][:self.args.max_context_length]
 
-            
+            '''
             if self.args.trim_passage and '»' in passage:
                 print()
                 print(passage)
@@ -177,7 +187,7 @@ class QADataset(Dataset):
                 passage = p1
                 print(passage)
             
-            '''
+            
             if self.args.trim_passage and 'cnn' in passage:
                 cnn_idx = passage.index('cnn')
                 passage = passage[cnn_idx+3:]
