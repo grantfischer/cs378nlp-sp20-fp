@@ -155,6 +155,13 @@ class QADataset(Dataset):
         elems.extend(elem2)
         return meta, elems
 
+    def print_passage(self, passage):
+        s = ''
+        for token in passage:
+            s += token
+            s += ' '
+        print(s)
+
     def _create_samples(self):
         """
         Formats raw examples to desired form. Any passages/questions longer
@@ -173,11 +180,11 @@ class QADataset(Dataset):
             
             if self.args.trim_passage and '»' in passage:
                 print()
-                print(passage)
+                self.print_passage(passage)
                 while '»' in passage:
                     print('***')
                     passage = self.remove_link(passage)
-                    print(passage)
+                    self.print_passage(passage)
             
             '''
             if self.args.trim_passage and 'cnn' in passage:
