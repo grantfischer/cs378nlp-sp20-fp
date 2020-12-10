@@ -142,7 +142,6 @@ class QADataset(Dataset):
         if path == 'exp':
             self.meta, self.elems = self._compound_datasets()
         else:
-            print(path)
             self.meta, self.elems = load_dataset(path)
         self.samples = self._create_samples()
         self.tokenizer = None
@@ -151,7 +150,6 @@ class QADataset(Dataset):
             if self.tokenizer is not None else 0
 
     def _compound_datasets(self):
-        print('***compounding datasets')
         meta, elems = load_dataset('datasets/squad_train.jsonl.gz')
         _, elem2 = load_dataset('datasets/newsqa_train.jsonl.gz')
         elems.extend(elem2)
@@ -172,23 +170,16 @@ class QADataset(Dataset):
                 token.lower() for (token, offset) in elem['context_tokens']
             ][:self.args.max_context_length]
 
-            '''
+            
             if self.args.trim_passage and '»' in passage:
                 print()
                 print(passage)
-                print('***')
-                per_idx = arr_idx = passage.index('»')
-                per_found = False
-                while not per_found:
-                    per_idx -= 1
-                    if passage[per_idx] == '.' or per_idx == 0:
-                        per_found = True
-                p1, p2 = passage[0:per_idx+1], passage[arr_idx+1:]
-                p1.extend(p2)
-                passage = p1
-                print(passage)
+                while '»' in passage:
+                    print('***')
+                    passage = self.remove_link(passage)
+                    print(passage)
             
-            
+            '''
             if self.args.trim_passage and 'cnn' in passage:
                 cnn_idx = passage.index('cnn')
                 passage = passage[cnn_idx+3:]
@@ -353,6 +344,26 @@ class QADataset(Dataset):
             tokenizer: If `True`, shuffle examples. Default: `False`
         """
         self.tokenizer = tokenizer
+
+    def remove_link(self, passage):
+        if '»' in passage:
+            arr_idx = passage.index('»')
+            punct_idx = arr_idx-1
+            punct_found = False
+            while punct_idx >= 0 and not punct_found:
+                if passage[punct_idx] in ['.', '?', '!']:
+                    punct_found = True
+                    break
+                punct_idx -= 1
+            if punct_found:
+                new_passage = passage[0:punct_idx+1]
+                new_passage.extend(passage[arr_idx+1:])
+                return new_passage
+            else:
+                passage.pop(arr_idx)
+                return passage
+        else:
+            return passage
     
     def __len__(self):
         return len(self.samples)
