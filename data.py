@@ -179,12 +179,15 @@ class QADataset(Dataset):
 
             
             if self.args.trim_passage and '»' in passage:
+                passage = self.remove_link(passage)
+                '''
                 #print()
                 #self.print_passage(passage)
                 while '»' in passage:
                     #print('***')
                     passage = self.remove_link(passage)
                     #self.print_passage(passage)
+                '''
             
             '''
             if self.args.trim_passage and 'cnn' in passage:
