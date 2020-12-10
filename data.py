@@ -177,19 +177,15 @@ class QADataset(Dataset):
                 token.lower() for (token, offset) in elem['context_tokens']
             ][:self.args.max_context_length]
 
-            
+            rem_ranges = []
             if self.args.trim_passage and '»' in passage:
-                #passage = self.remove_link(passage)
-                #passage.pop(passage.index('»'))
-                print(elem)
-                '''
-                #print()
+                print()
                 #self.print_passage(passage)
                 while '»' in passage:
                     #print('***')
-                    passage = self.remove_link(passage)
+                    passage, rem_range = self.remove_link(passage)
                     #self.print_passage(passage)
-                '''
+                    rem_ranges.append(rem_range)
             
             '''
             if self.args.trim_passage and 'cnn' in passage:
@@ -209,9 +205,34 @@ class QADataset(Dataset):
                 # is inclusive.
                 answers = qa['detected_answers']
                 answer_start, answer_end = answers[0]['token_spans'][0]
-                samples.append(
-                    (qid, passage, question, answer_start, answer_end)
-                )
+                if self.args.trim_passage:
+                    can_add = True
+                    for r in rem_ranges:
+                        if answer_end < r[0]: # answer is before range -> good
+                            pass
+                        elif answer_start > r[1]: # answer is after range -> good
+                            pass
+                        else:
+                            can_add = False
+                    if can_add:
+                        if answer_end < rem_ranges[0][0]:
+                            samples.append(
+                                (qid, passage, question, answer_start, answer_end)
+                            )
+                        else:
+                            num_rem = 0
+                            for r in rem_ranges:
+                                if r[0] > answer_end:
+                                    break
+                                else:
+                                    num_rem += r[1] - r[0]
+                            samples.append(
+                                (qid, passage, question, answer_start-num_rem, answer_end-num_rem)
+                            )
+                else:
+                    samples.append(
+                        (qid, passage, question, answer_start, answer_end)
+                    )
                 
         return samples
 
@@ -370,12 +391,12 @@ class QADataset(Dataset):
             if punct_found:
                 new_passage = passage[0:punct_idx+1]
                 new_passage.extend(passage[arr_idx+1:])
-                return new_passage
+                return new_passage, (punct_idx+1, arr_idx)
             else:
                 passage.pop(arr_idx)
-                return passage
+                return passage, (arr_idx,arr_idx)
         else:
-            return passage
+            return passage, (0,0)
     
     def __len__(self):
         return len(self.samples)
