@@ -180,7 +180,8 @@ class QADataset(Dataset):
             
             if self.args.trim_passage and '»' in passage:
                 #passage = self.remove_link(passage)
-                passage.pop(passage.index('»'))
+                #passage.pop(passage.index('»'))
+                print(elem)
                 '''
                 #print()
                 #self.print_passage(passage)
