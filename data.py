@@ -179,7 +179,6 @@ class QADataset(Dataset):
 
             rem_ranges = []
             if self.args.trim_passage and '»' in passage:
-                print()
                 #self.print_passage(passage)
                 while '»' in passage:
                     #print('***')
