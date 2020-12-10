@@ -222,7 +222,7 @@ class QADataset(Dataset):
                                 if r[0] > answer_end:
                                     break
                                 else:
-                                    num_rem += ((r[1] - r[0])-1)
+                                    num_rem += ((r[1] - r[0])+1)
                             samples.append((qid, passage, question, answer_start-num_rem, answer_end-num_rem))
                 else:
                     samples.append((qid, passage, question, answer_start, answer_end))
