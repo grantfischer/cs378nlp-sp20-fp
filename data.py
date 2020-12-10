@@ -142,6 +142,7 @@ class QADataset(Dataset):
         if path == 'exp':
             self.meta, self.elems = self._compound_dataset()
         else:
+            print(path)
             self.meta, self.elems = load_dataset(path)
         self.samples = self._create_samples()
         self.tokenizer = None
