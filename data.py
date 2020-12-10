@@ -140,7 +140,7 @@ class QADataset(Dataset):
     def __init__(self, args, path):
         self.args = args
         if path == 'exp':
-            self.meta, self.elems = self._compound_dataset()
+            self.meta, self.elems = self._compound_datasets()
         else:
             print(path)
             self.meta, self.elems = load_dataset(path)
