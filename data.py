@@ -215,10 +215,8 @@ class QADataset(Dataset):
                         else:
                             can_add = False
                     if can_add:
-                        if answer_end < rem_ranges[0][0]:
-                            samples.append(
-                                (qid, passage, question, answer_start, answer_end)
-                            )
+                        if len(rem_ranges) == 0 or answer_end < rem_ranges[0][0]:
+                            samples.append((qid, passage, question, answer_start, answer_end))
                         else:
                             num_rem = 0
                             for r in rem_ranges:
@@ -226,13 +224,9 @@ class QADataset(Dataset):
                                     break
                                 else:
                                     num_rem += r[1] - r[0]
-                            samples.append(
-                                (qid, passage, question, answer_start-num_rem, answer_end-num_rem)
-                            )
+                            samples.append((qid, passage, question, answer_start-num_rem, answer_end-num_rem))
                 else:
-                    samples.append(
-                        (qid, passage, question, answer_start, answer_end)
-                    )
+                    samples.append((qid, passage, question, answer_start, answer_end))
                 
         return samples
 
